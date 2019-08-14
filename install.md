@@ -207,9 +207,88 @@ Chercher la ligne *#Color* et la décommenter.
 
 ## Installation de l'interface graphique
 
+### Environnement de bureau XFCE
+
+On commence par installer Xorg, et les paquets pour la gestion du clavier/souris/trackpad :
+
+```
+yay -S xorg-{server,xinit,apps} xf86-input-{mouse,keyboard,libinput} xdg-user-dirs
+``` 
+
+On va aussi définir tout de suite l'agencement du clavier :
+
+```
+sudo localectl set-x11-keymap fr
+```
+
+On ajoute le pilote pour la carte vidéo Intel (on s'occupera de la carte Nvidia plus tard).  
+On installe également quelques polices :
+
+```
+yay -S xf86-video-intel ttf-{bitstream-vera,liberation,dejavu}
+```
+
+Vient ensuite la gestion des imprimantes et de leurs différents pilotes, que l'on active :
+
+```
+yay -S cups foomatic-{db,db-ppds,db-gutenprint-ppds,db-nonfree,db-nonfree-ppds} gutenprint
+sudo systemctl enable avahi-daemon.service
+sudo systemctl enable avahi-dnsconfd.service
+sudo systemctl enable org.cups.cupsd.service
+```
+
+Après tous ces préparatif,s il est temps de passer à l'installation de XFCE :
+
+```
+yay -S xfce4 
+```
+
+Puis on ajoute des utilitaires de XFCE, et les modules pour la barre des tâches et l'explorateur de fichiers :
+
+```
+yay -S xfce4-{artwork,notifyd,screensaver,screenshooter,taskmanager}
+yay -S xfce4-{battery,clipman,cpufreq,cpugraph,datetime,diskperf,fsguard,genmon,mailwatch,mount,mpc,netload,notes,pulseaudio,sensors,smartbookmark,systemload,timer,verve,wavelan,weather,whiskermenu,xkb}-plugin
+yay -S thunar-{archive,media-tags}-plugin 
+```
+
+Le système de base est prêt, on peut maintenant ajouter des logiciels plus spécifiques :
+
+```
+yay -S firefox-i18n-fr firefox-ublock-origin vlc ffmpegthumbnailer evince xarchiver galculator pavucontrol pulseaudio-{alsa,bluetooth} blueman libcanberra-{pulse,gstreamer} system-config-printer network-manager-applet mugshot
+```
+
+On y ajoute différents pilotes systèmes de fichiers montables :
+
+```
+yay -S gvfs-{afc,google,gphoto2,mtp,nfs,smb}
+```
+
+Ainsi que des codecs audio et vidéo :
+
+```
+yay -S gst-plugins-{base,good,bad,ugly} gst-libav
+```
+
+### Gestionnaire d'affichage lightdm
+
+Ne reste plus qu'à ajouter un gestionnaire d'affichage et un écran de connexion :
+
+```
+yay -S lightdm-slick-greeter
+```
+
+Et à démarrer l'interface graphique :
+
+```
+sudo systemctl start lightdm.service
+```
+
+Si tout se passe bien, on n'oublie pas de l'activer :
+
+```
+sudo systemctl enable lightdm.service
+```
 *TODO*
-*XFCE ?*
-*i3wm(-gaps) + polybar ?*
 
 ## Optimisation
 
