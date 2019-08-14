@@ -97,7 +97,19 @@ ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 hwclock --systohc --utc
 ```
 
-Vient après la langue du système. Editer `/etc/locale.gen` et décommencer la ligne *fr_FR.UTF-8 UTF-8*.  
+On va même installer *ntp* pour récupérer l'heure automatiquement :
+
+```
+pacman -S ntp
+```
+
+Puis cronie qui sert à exécuter des tâches récurrentes :
+
+```
+pacman -S cronie 
+```
+
+Vient ensuite la langue du système. Editer `/etc/locale.gen` et décommencer la ligne *fr_FR.UTF-8 UTF-8*.  
 Puis générer les traductions et ajouter la nouvelle langue dans `/etc/locale.conf` et pour la session en cours :
 
 ```
@@ -135,13 +147,16 @@ Et également installer puis activer NetworkManager pour la gestion du réseau :
 
 ```
 pacman -Syy networkmanager
-systemctl enable NetworkManager
+systemctl enable NetworkManager.service
 ```
 
-Le disque utilisé étant un NVMe, il faut aussi lancer le timer fstrim :
+On active aussi quelques services utiles installés précédemment :
 
 ```
 systemctl enable fstrim.timer
+systemctl enable syslog-ng@default.service
+systemctl enable cronie.service
+systemctl enable ntpd.service
 ```
 
 #### Finalisation
