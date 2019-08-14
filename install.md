@@ -215,7 +215,7 @@ Chercher la ligne *#Color* et la décommenter.
 
 ### Gestion de la batterie
 
-*TODO: tlp powertop bbswitch bumblebee prime*
+*TODO: bbswitch bumblebee prime*
 
 #### Mise en veille
 
@@ -240,7 +240,33 @@ La commande suivante devrait afficher le mode *deep* actif :
 cat /sys/power/mem_sleep
 ```
 
-*TODO: tlp powertop bbswitch bumblebee prime*
+#### Optimisation : TLP
+
+Pour optimiser la consommation de l'ordinateur sur batterie, on installe *tlp* et son extension *tlp-rdw* (pour les cartes sans-fil) :
+
+```
+yay -S tlp tlp-rdw
+```
+
+On masque ensuite les services requis par *tlp-rdw*, et on active *NetworkManager-dispatcher* :
+
+```
+sudo systemctl mask systemd-rfkill.service systemd-rfkill.socket
+sudo systemctl enable NetworkManager-dispatcher.service
+```
+
+Enfin on peut lancer *tlp* et *tlp-rdw* :
+
+```
+sudo systemctl start tlp.service
+sudo systemctl enable tlp.service
+```
+
+Pour suivre la consommation de la batterie, on installe *powertop* :
+
+```
+yay -S powertop
+```
 
 ### Carte graphique dédiée
 
