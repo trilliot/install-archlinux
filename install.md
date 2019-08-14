@@ -1,5 +1,7 @@
 Ce guide d'installation s'applique pour la configuration personnelle de mon ordinateur portable.
 
+Inspiré de https://github.com/FredBezies/arch-tuto-installation/
+
 # Sommaire
 
 - Installation de ArchLinux
@@ -62,7 +64,7 @@ N'activer que les miroirs locaux dans `/etc/pacman.d/mirrorlist` pour accélére
 Commencer par installer le système de base, quelques utilitaires (notamment pour la gestion de la batterie), et le bootloader UEFI :
 
 ```
-pacstrap /mnt base base-devel pacman-contrib
+pacstrap /mnt base base-devel
 pacstrap /mnt zip unzip p7zip vim mc alsa-utils syslog-ng mtools dosfstools lsb-release exfat-utils bash-completion intel-ucode
 pacstram /mnt grub efibootmgr
 ```
@@ -136,6 +138,11 @@ pacman -Syy networkmanager
 systemctl enable NetworkManager
 ```
 
+Le disque utilisé étant un NVMe, il faut aussi lancer le timer fstrim :
+
+```
+systemctl enable fstrim.timer
+```
 
 #### Finalisation
 
@@ -179,9 +186,15 @@ cd yay
 makepkg -sri
 ```
 
+Pour activer les couleurs, éditer le fichier `/etc/pacman.conf`.  
+Chercher la ligne *#Color* et la décommenter.
+
+
 ## Installation de l'interface graphique
 
 *TODO*
+*XFCE ?*
+*i3wm(-gaps) + polybar ?*
 
 ## Optimisation
 
