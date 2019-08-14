@@ -202,6 +202,31 @@ Chercher la ligne *#Color* et la décommenter.
 
 *TODO: tlp powertop bbswitch bumblebee prime*
 
+#### Mise en veille
+
+Avant de commencer, il faut changer le mode de mise en veille (celui par défaut n'est pas efficient).  
+On édite les paramètres du kernel dans `/etc/default/grub/` pour modifier la ligne :
+
+```
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet mem_sleep_default=deep"
+```
+
+Ensuite, on redéploie le booloader Grub, puis on redémarre :
+
+```
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --recheck
+grub-mkconfig -o /boot/grub/grub.cfg
+reboot
+```
+
+La commande suivante devrait afficher le mode *deep* actif :
+
+```
+cat /sys/power/mem_sleep
+```
+
+*TODO: tlp powertop bbswitch bumblebee prime*
+
 ### Carte graphique dédiée
 
 *TODO*
