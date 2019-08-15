@@ -231,13 +231,19 @@ yay -S xf86-video-intel ttf-{bitstream-vera,liberation,dejavu}
 Vient ensuite la gestion des imprimantes et de leurs différents pilotes, que l'on active :
 
 ```
-yay -S cups foomatic-{db,db-ppds,db-gutenprint-ppds,db-nonfree,db-nonfree-ppds} gutenprint
+yay -S cups foomatic-{db,db-ppds,db-gutenprint-ppds,db-nonfree,db-nonfree-ppds} gutenprint nss-mdns
 sudo systemctl enable avahi-daemon.service
 sudo systemctl enable avahi-dnsconfd.service
 sudo systemctl enable org.cups.cupsd.service
 ```
 
-Après tous ces préparatif,s il est temps de passer à l'installation de XFCE :
+Et on active la résolution des noms MDNS dans le fichier `/etc/nsswitch.conf`, en ajoutant à la ligne, avant l'instruction *resolve* et *dns* :
+
+```
+hosts: ... mdns_minimal [NOTFOUND=return] ...
+```
+
+Après tous ces préparatifs, il est temps de passer à l'installation de XFCE :
 
 ```
 yay -S xfce4 
