@@ -288,7 +288,67 @@ Si tout se passe bien, on n'oublie pas de l'activer :
 ```
 sudo systemctl enable lightdm.service
 ```
-*TODO*
+
+### Thème XFCE
+
+Pour embellir l'interfae de bureau, on va installer un thème graphique et de nouvelles icônes :
+
+```
+yay -S cogir-gtk-theme-git cogir-icon-theme-git
+```
+
+Il faut ensuite activer le thème et les icônes dans *Apparence*.
+
+### Gestion du touchpad
+
+On configure le touchpad pour qu'il ait le même comportement que celui d'un MacBook (question d'habitude) :
+
+```
+sudo tee /etc/X11/xorg.conf.d/30-touchpad.conf <<EOF
+Section "InputClass"
+    Identifier "touchpad"
+    Driver "libinput"
+    MatchIsTouchpad "on"
+    Option "ClickMethod" "clickfinger"
+    Option "NaturalScrolling" "on"
+    Option "ScrollMethod" "twofinger"
+EndSection
+EOF
+```
+
+On va également gérer les mouvements multi-touch. On commence par s'ajouter au groupe *input* :
+
+```
+sudo gpasswd -a $USER input
+```
+
+Il faut ensuite se déconnecter puis se reconnecter de sa session.  
+On installe ensuite le paquet :
+
+```
+yay -S libinput-gestures
+```
+
+On peut si besoin personnaliser la configuration pour ajouter ou modifier des mouvements.  
+Pour cela on copie le fichier de configuration dans son répertoire personnel :
+
+```
+cp /etc/libinput-gestures.conf ~/.config/
+vim ~/.config/libinput-gestures.conf
+```
+
+Enfin on active le service :
+
+```
+libinput-gestures-setup autostart
+```
+
+### Ouverture du menu au clavier
+
+Il n'y a pas de raccourci par défaut pour ouvrir le menu d'applications au clavier. On va en ajouter un.
+
+Ouvrir l'application *Clavier* et dans l'onglet *Raccourcis d'applications*, ajouter sur le bouton *+ Ajouter*.  
+La commande à exécuter est `xfce4-popup-whiskermenu`, il ne reste plus qu'à valider et appuyer sur la touche qui va déclencher l'action (dans mon cas *Super*).
 
 ## Optimisation
 
