@@ -215,12 +215,6 @@ On commence par installer Xorg, et les paquets pour la gestion du clavier/souris
 yay -S xorg-{server,xinit,apps} xf86-input-{mouse,keyboard,libinput} xdg-user-dirs
 ``` 
 
-On va aussi définir tout de suite l'agencement du clavier :
-
-```
-sudo localectl set-x11-keymap fr
-```
-
 On ajoute le pilote pour la carte vidéo Intel (on s'occupera de la carte Nvidia plus tard).  
 On installe également quelques polices :
 
@@ -247,6 +241,12 @@ Après tous ces préparatifs, il est temps de passer à l'installation de XFCE :
 
 ```
 yay -S xfce4 
+```
+
+On va aussi définir tout de suite l'agencement du clavier :
+
+```
+sudo localectl set-x11-keymap fr
 ```
 
 Puis on ajoute des utilitaires de XFCE, et les modules pour la barre des tâches et l'explorateur de fichiers :
@@ -283,6 +283,13 @@ Ne reste plus qu'à ajouter un gestionnaire d'affichage et un écran de connexio
 yay -S lightdm-slick-greeter
 ```
 
+Il faut dire à *lightdm* quel écran de connexion utiliser en éditant le fichier `/etc/lightdm/lightdm.conf`.  
+Trouver la ligne *#greeter-session=example-gtk-gnome* dans la section *[Seat:*]* et la modifier pour :
+
+```
+greeter-session=lightdm-slick-greeter
+```
+
 Et à démarrer l'interface graphique :
 
 ```
@@ -300,7 +307,7 @@ sudo systemctl enable lightdm.service
 Pour embellir l'interfae de bureau, on va installer un thème graphique et de nouvelles icônes :
 
 ```
-yay -S cogir-gtk-theme-git cogir-icon-theme-git
+yay -S qogir-gtk-theme-git qogir-icon-theme-git
 ```
 
 Il faut ensuite activer le thème et les icônes dans *Apparence*.
@@ -374,8 +381,8 @@ GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet mem_sleep_default=deep"
 Ensuite, on redéploie le booloader Grub, puis on redémarre :
 
 ```
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --recheck
-grub-mkconfig -o /boot/grub/grub.cfg
+sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --recheck
+sudo grub-mkconfig -o /boot/grub/grub.cfg
 reboot
 ```
 
@@ -403,8 +410,8 @@ sudo systemctl enable NetworkManager-dispatcher.service
 Enfin on peut lancer *tlp* et *tlp-rdw* :
 
 ```
-sudo systemctl start tlp.service
-sudo systemctl enable tlp.service
+sudo systemctl enable tlp.service tlp-sleep.service
+sudo systemctl start tlp.service tlp-sleep.service
 ```
 
 Pour suivre la consommation de la batterie, on installe *powertop* :
