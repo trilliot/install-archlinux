@@ -30,10 +30,13 @@ Dans mon cas, il s'agit d'un disque NVMe. Il sera donc référencé sous `/dev/n
 
 Lancer `cgdisk /dev/nvme0n1` (en remplaçant le chemin vers le disque au besoin) et partitionner comme suit :
 
-| Parititon | Size | Code |
+| Partition | Size | Code |
 | --------- | ---- | ---- |
-| / | 20G | `8300` (Linux filesystem) |
+| / | 50G | `8300` (Linux filesystem) |
+| /boot | 1G | `8300` (Linux filesystem) |
 | /boot/efi | 512M | `ef00` (EFI System) |
+| /tmp | 2G | `8300` (Linux filesystem) |
+| /var | 250G | `8300` (Linux filesystem) |
 | /home | ∞ | `8300` (Linux filesystem) |
 
 ### Formattage
@@ -42,17 +45,23 @@ Il faut maintenant partionner nos partitions.
 
 ```
 mkfs.ext4 /dev/nvme0n1p1
-mkfs.fat -F32 /dev/nvme0n1p2
-mkfs.ext4 /dev/nvme0n1p3
+mkfs.ext4 /dev/nvme0n1p2
+mkfs.fat -F32 /dev/nvme0n1p3
+mkfs.ext4 /dev/nvme0n1p4
+mkfs.ext4 /dev/nvme0n1p5
+mkfs.ext4 /dev/nvme0n1p6
 ```
 
 Puis les monter :
 
 ```
 mount /dev/nvme0n1p1 /mnt
-mkdir /mnt/{boot,boot/efi,home}
-mount /dev/nvme0n1p2 /mnt/boot/efi
-mount /dev/nvme0n1p3 /mnt/home
+mkdir /mnt/{boot,boot/efi,tmp,var,home}
+mount /dev/nvme0n1p2 /mnt/boot
+mount /dev/nvme0n1p3 /mnt/boot/efi
+mount /dev/nvme0n1p4 /mnt/tmp
+mount /dev/nvme0n1p5 /mnt/var
+mount /dev/nvme0n1p6 /mnt/home
 ```
 
 ### ArchLinux
