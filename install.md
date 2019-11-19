@@ -56,12 +56,13 @@ Puis les monter :
 
 ```
 mount /dev/nvme0n1p1 /mnt
-mkdir /mnt/{boot,boot/efi,tmp,var,home}
+mkdir /mnt/{boot,tmp,var,home}
 mount /dev/nvme0n1p2 /mnt/boot
-mount /dev/nvme0n1p3 /mnt/boot/efi
 mount /dev/nvme0n1p4 /mnt/tmp
 mount /dev/nvme0n1p5 /mnt/var
 mount /dev/nvme0n1p6 /mnt/home
+mkdir /mnt/boot/efi
+mount /dev/nvme0n1p3 /mnt/boot/efi
 ```
 
 ### ArchLinux
