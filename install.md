@@ -274,7 +274,7 @@ yay -S thunar-{archive,media-tags}-plugin
 Le système de base est prêt, on peut maintenant ajouter des logiciels plus spécifiques :
 
 ```
-yay -S firefox-i18n-fr firefox-ublock-origin vlc ffmpegthumbnailer evince xarchiver galculator pavucontrol pulseaudio-{alsa,bluetooth} blueman libcanberra-{pulse,gstreamer} system-config-printer network-manager-applet mugshot
+yay -S firefox-i18n-fr firefox-ublock-origin vlc ffmpegthumbnailer evince-no-gnome xarchiver galculator pavucontrol pulseaudio-{alsa,bluetooth} blueman libcanberra-{pulse,gstreamer} system-config-printer network-manager-applet mugshot
 ```
 
 On y ajoute différents pilotes systèmes de fichiers montables :
