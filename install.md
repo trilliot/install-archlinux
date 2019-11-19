@@ -135,7 +135,13 @@ Et voilà ! Nous sommes prêts à générer l'image du noyau :
 mkinitcpio -P
 ```
 
-Il faut maintenant déterminer quel systèmes sont amorçables.  
+Ne reste plus qu'à installer _systemd-boot_ dans l'UEFI  :
+
+```
+bootctl --path=esp install
+```
+
+Puis déterminer quel systèmes sont amorçables.  
 Créer un fichier _/boot/loader/entries/arch.conf_ :
 ```
 title   Arch Linux
@@ -143,12 +149,6 @@ linux   /vmlinuz-linux
 initrd  /intel-ucode.img
 initrd  /initramfs-linux.img
 options root=/dev/nvme0n1p1 rw quiet mem_sleep_default=deep
-```
-
-Ne reste plus qu'à installer _systemd-boot_ dans l'UEFI  :
-
-```
-bootctl --path=esp install
 ```
 
 Pour paufiner et sécuriser, on va donner un mot de passe au compte super-utilisateur :
