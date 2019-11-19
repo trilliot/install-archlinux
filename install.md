@@ -33,8 +33,7 @@ Lancer `cgdisk /dev/nvme0n1` (en remplaçant le chemin vers le disque au besoin)
 | Partition | Size | Code |
 | --------- | ---- | ---- |
 | / | 50G | `8300` (Linux filesystem) |
-| /boot | 1G | `8300` (Linux filesystem) |
-| /boot/efi | 512M | `ef00` (EFI System) |
+| /boot | 1G | `ef00` (EFI System) |
 | /tmp | 2G | `8300` (Linux filesystem) |
 | /var | 200G | `8300` (Linux filesystem) |
 | /home | ∞ | `8300` (Linux filesystem) |
@@ -45,11 +44,10 @@ Il faut maintenant partionner nos partitions.
 
 ```
 mkfs.ext4 /dev/nvme0n1p1
-mkfs.ext4 /dev/nvme0n1p2
-mkfs.fat -F32 /dev/nvme0n1p3
+mkfs.fat -F32 /dev/nvme0n1p2
+mkfs.ext4 /dev/nvme0n1p3
 mkfs.ext4 /dev/nvme0n1p4
 mkfs.ext4 /dev/nvme0n1p5
-mkfs.ext4 /dev/nvme0n1p6
 ```
 
 Puis les monter :
@@ -58,11 +56,9 @@ Puis les monter :
 mount /dev/nvme0n1p1 /mnt
 mkdir /mnt/{boot,tmp,var,home}
 mount /dev/nvme0n1p2 /mnt/boot
-mount /dev/nvme0n1p4 /mnt/tmp
-mount /dev/nvme0n1p5 /mnt/var
-mount /dev/nvme0n1p6 /mnt/home
-mkdir /mnt/boot/efi
-mount /dev/nvme0n1p3 /mnt/boot/efi
+mount /dev/nvme0n1p3 /mnt/tmp
+mount /dev/nvme0n1p4 /mnt/var
+mount /dev/nvme0n1p5 /mnt/home
 ```
 
 ### ArchLinux
@@ -76,7 +72,6 @@ Commencer par installer le système de base, quelques utilitaires (notamment pou
 ```
 pacstrap /mnt base base-devel linux linux-firmware
 pacstrap /mnt zip unzip p7zip vim mc alsa-utils syslog-ng mtools dosfstools lsb-release exfat-utils bash-completion intel-ucode
-pacstrap /mnt grub efibootmgr
 ```
 
 Générer le fichier /etc/fstab qui liste les partitions créées plus tôt :
@@ -137,14 +132,23 @@ echo 'KEYMAP=fr' > /etc/vconsole.conf
 Et voilà ! Nous sommes prêts à générer l'image du noyau :
 
 ```
-mkinitcpio -p linux
+mkinitcpio -P
 ```
 
-Ne reste plus qu'à installer et configurer Grub dans l'UEFI :
+Il faut maintenant déterminer quel systèmes sont amorçables.  
+Créer un fichier _/boot/loader/entries/arch.conf_ :
+```
+title   Arch Linux
+linux   /vmlinuz-linux
+initrd  /intel-ucode.img
+initrd  /initramfs-linux.img
+options root=/dev/nvme0n1p1 rw quiet mem_sleep_default=deep
+```
+
+Ne reste plus qu'à installer _systemd-boot_ dans l'UEFI  :
 
 ```
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --recheck
-grub-mkconfig -o /boot/grub/grub.cfg
+bootctl --path=esp install
 ```
 
 Pour paufiner et sécuriser, on va donner un mot de passe au compte super-utilisateur :
@@ -381,26 +385,14 @@ La commande à exécuter est `xfce4-popup-whiskermenu`, il ne reste plus qu'à v
 
 #### Mise en veille
 
-Avant de commencer, il faut changer le mode de mise en veille (celui par défaut n'est pas efficient).  
-On édite les paramètres du kernel dans `/etc/default/grub/` pour modifier la ligne :
-
-```
-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet mem_sleep_default=deep"
-```
-
-Ensuite, on redéploie le booloader Grub, puis on redémarre :
-
-```
-sudo grub-install --target=x86_64-efi --efi-directory=/boot/efi --recheck
-sudo grub-mkconfig -o /boot/grub/grub.cfg
-reboot
-```
-
-La commande suivante devrait afficher le mode *deep* actif :
+Vérifier que le mode _deep_ est bien actif :
 
 ```
 cat /sys/power/mem_sleep
 ```
+
+Si ce n'est pas le cas, vérifier la configuration dans _/boot/loader/entries/arch.conf_.
+
 
 #### Optimisation : TLP
 
