@@ -138,7 +138,7 @@ mkinitcpio -P
 Ne reste plus qu'à installer _systemd-boot_ dans l'UEFI  :
 
 ```
-bootctl --path=esp install
+bootctl --path=/boot install
 ```
 
 Puis déterminer quel systèmes sont amorçables.  
