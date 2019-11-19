@@ -36,7 +36,7 @@ Lancer `cgdisk /dev/nvme0n1` (en remplaçant le chemin vers le disque au besoin)
 | /boot | 1G | `8300` (Linux filesystem) |
 | /boot/efi | 512M | `ef00` (EFI System) |
 | /tmp | 2G | `8300` (Linux filesystem) |
-| /var | 250G | `8300` (Linux filesystem) |
+| /var | 200G | `8300` (Linux filesystem) |
 | /home | ∞ | `8300` (Linux filesystem) |
 
 ### Formattage
@@ -76,7 +76,7 @@ Commencer par installer le système de base, quelques utilitaires (notamment pou
 ```
 pacstrap /mnt base base-devel
 pacstrap /mnt zip unzip p7zip vim mc alsa-utils syslog-ng mtools dosfstools lsb-release exfat-utils bash-completion intel-ucode
-pacstram /mnt grub efibootmgr
+pacstrap /mnt grub efibootmgr
 ```
 
 Générer le fichier /etc/fstab qui liste les partitions créées plus tôt :
