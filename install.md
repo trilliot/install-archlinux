@@ -74,7 +74,7 @@ N'activer que les miroirs locaux dans `/etc/pacman.d/mirrorlist` pour accélére
 Commencer par installer le système de base, quelques utilitaires (notamment pour la gestion de la batterie), et le bootloader UEFI :
 
 ```
-pacstrap /mnt base base-devel
+pacstrap /mnt base base-devel linux linux-firmware
 pacstrap /mnt zip unzip p7zip vim mc alsa-utils syslog-ng mtools dosfstools lsb-release exfat-utils bash-completion intel-ucode
 pacstrap /mnt grub efibootmgr
 ```
