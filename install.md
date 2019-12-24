@@ -1,10 +1,19 @@
 Ce guide d'installation s'applique pour la configuration personnelle de mon ordinateur portable.
 
-Inspiré de https://github.com/FredBezies/arch-tuto-installation/
+Inspiré de :
+
+- https://github.com/FredBezies/arch-tuto-installation/
+- https://gist.github.com/OdinsPlasmaRifle/e16700b83624ff44316f87d9cdbb5c94
 
 # Sommaire
 
 - Installation de ArchLinux
+  - Préambule
+  - Système de base
+  - Créer un compte utilisateur
+  - Installer *yay*
+  - Installation de l'interface graphique
+  - Optimisation
 
 # Installation de ArchLinux
 
@@ -203,7 +212,7 @@ Trouver la ligne _#Uncomment to allow members of group wheel to execute any comm
 
 A partir de maintenant, on peut arrêter d'utiliser le compte _root_ et passer sur son compte personnel.
 
-## Installer yay
+## Installer *yay*
 
 yay est un outil qui s'ajoute à pacman pour gérer les AUR.  
 Il s'installe sous son compte personnel :
