@@ -70,8 +70,8 @@ N'activer que les miroirs locaux dans `/etc/pacman.d/mirrorlist` pour accélére
 Commencer par installer le système de base, quelques utilitaires (notamment pour la gestion de la batterie), et le bootloader UEFI :
 
 ```
-pacstrap /mnt base base-devel linux linux-firmware
-pacstrap /mnt zip unzip p7zip vim mc alsa-utils syslog-ng mtools dosfstools lsb-release exfat-utils bash-completion intel-ucode
+pacstrap /mnt base base-devel linux linux-firmware intel-ucode
+pacstrap /mnt sudo zip unzip p7zip vim alsa-utils syslog-ng mtools dosfstools exfat-utils bash-completion
 ```
 
 Générer le fichier /etc/fstab qui liste les partitions créées plus tôt :
@@ -226,14 +226,13 @@ Chercher la ligne *#Color* et la décommenter.
 On commence par installer Xorg, et les paquets pour la gestion du clavier/souris/trackpad :
 
 ```
-yay -S xorg-{server,xinit,apps} xf86-input-{mouse,keyboard,libinput} xdg-user-dirs
+yay -S xorg-{server,xinit,apps} xf86-input-libinput xdg-user-dirs
 ``` 
 
-On ajoute le pilote pour la carte vidéo Intel (on s'occupera de la carte Nvidia plus tard).  
-On installe également quelques polices :
+On ajoute le pilote pour la carte vidéo Intel (on s'occupera de la carte Nvidia plus tard) :
 
 ```
-yay -S xf86-video-intel ttf-{bitstream-vera,liberation,dejavu}
+yay -S xf86-video-intel
 ```
 
 Vient ensuite la gestion des imprimantes et de leurs différents pilotes, que l'on active :
@@ -249,6 +248,12 @@ Et on active la résolution des noms MDNS dans le fichier `/etc/nsswitch.conf`, 
 
 ```
 hosts: ... mdns_minimal [NOTFOUND=return] ...
+```
+
+Et enfin, le Scanner Canon :
+
+```
+yay -S scangearmp2
 ```
 
 Après tous ces préparatifs, il est temps de passer à l'installation de XFCE :
@@ -267,20 +272,20 @@ Puis on ajoute des utilitaires de XFCE, et les modules pour la barre des tâches
 
 ```
 yay -S xfce4-{artwork,notifyd,screensaver,screenshooter,taskmanager}
-yay -S xfce4-{battery,clipman,cpufreq,cpugraph,datetime,diskperf,fsguard,genmon,mailwatch,mount,mpc,netload,notes,pulseaudio,sensors,smartbookmark,systemload,timer,verve,wavelan,weather,whiskermenu,xkb}-plugin
+yay -S xfce4-{pulseaudio,weather,whiskermenu}-plugin
 yay -S thunar-{archive,media-tags}-plugin 
 ```
 
 Le système de base est prêt, on peut maintenant ajouter des logiciels plus spécifiques :
 
 ```
-yay -S firefox-i18n-fr firefox-ublock-origin vlc ffmpegthumbnailer evince-no-gnome xarchiver galculator pavucontrol pulseaudio-{alsa,bluetooth} blueman libcanberra-{pulse,gstreamer} system-config-printer network-manager-applet mugshot
+yay -S firefox-i18n-fr vlc ffmpegthumbnailer evince-no-gnome xarchiver galculator pavucontrol pulseaudio-{alsa,bluetooth} blueman libcanberra-{pulse,gstreamer} system-config-printer network-manager-applet mugshot
 ```
 
 On y ajoute différents pilotes systèmes de fichiers montables :
 
 ```
-yay -S gvfs-{afc,google,gphoto2,mtp,nfs,smb}
+yay -S gvfs-{afc,goa,gphoto2,nfs,smb}
 ```
 
 Ainsi que des codecs audio et vidéo :
@@ -381,8 +386,6 @@ La commande à exécuter est `xfce4-popup-whiskermenu`, il ne reste plus qu'à v
 
 ### Gestion de la batterie
 
-*TODO: bbswitch bumblebee prime*
-
 #### Mise en veille
 
 Vérifier que le mode _deep_ est bien actif :
@@ -424,4 +427,51 @@ yay -S powertop
 
 ### Carte graphique dédiée
 
-*TODO*
+On s'attaque maintenant à la prise en charge de la carte graphique dédiée Nvidia.
+
+On commence par installer les drivers du constructeur :
+
+```
+yay -S nvidia
+``` 
+
+On y ajoute un outil pour changer la carte graphique active (selon si l'on souhaite préserver la batterie - Intel Graphics, ou effectuer des tâches gourmandes en GPU - Nvidia).  
+Puis on redémarre pour s'assurer de la prise en compte :
+
+```
+yay -S optimus-manager bbswitch
+systemctl enable optimus-manager
+reboot
+```
+
+Il ne reste plus qu'à tester les paramètres de préservation d'énergie.  
+Créer le fichier `/etc/optimus-manager/optimus-manager.conf.tmp` qui va dire à optimus-manager comment gérer le switch de carte (dans notre cas, avec *bbswitch*) :
+
+```
+[optimus]
+switching=bbswitch
+pci_power_control=no
+pci_remove=no
+pci_reset=no
+```
+
+On donne ensuite à *optimus-manager* ce fichier, qu'il faut temporairement utiliser (le temps de s'assurer qu'il fonctionne bien) :
+
+```
+optimus-manager --temp-config /etc/optimus-manager/optimus-manager.conf.tmp
+```
+
+A partir de maintenant, on peut tester le changement de carte active, en utilisant :
+
+```
+optimus-manager --switch nvidia
+optimus-manager --switch intel
+optimus-manager --status
+``` 
+
+Si tout va bien, on peut utiliser le fichier de configuration de façon définitive, et redémarrer :
+
+```
+sudo mv /etc/optimus-manager/optimus-manager.conf{.tmp,}
+reboot
+```
